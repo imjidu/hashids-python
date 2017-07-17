@@ -241,12 +241,9 @@ class Hashids(object):
     def separators(self):
         return self._separators
 
-    def encode(self, verify=False, *values):
+    def encode(self, *values):
         """Builds a hash from the passed `values`.
-
-        :param verify: Verify encoding result before return it. ``None`` will be returned if verification failed.
-        :param values: The values to transform into a hashid
-
+        :param values The values to transform into a hashid
         >>> hashids = Hashids('arbitrary salt', 16, 'abcdefghijkl0123456')
         >>> hashids.encode(1, 23, 456)
         '1d6216i30h53elk3'
@@ -254,15 +251,8 @@ class Hashids(object):
         if not (values and all(_is_uint(x) for x in values)):
             return ''
 
-        result = _encode(values, self._salt, self._min_length, self._alphabet,
-                         self._separators, self._guards)
-
-        if not verify:
-            return result
-
-        if not self.decode(result) == values:
-            return None
-        return result
+        return _encode(values, self._salt, self._min_length, self._alphabet,
+                       self._separators, self._guards)
 
     def decode(self, hashid):
         """Restore a tuple of numbers from the passed `hashid`.
